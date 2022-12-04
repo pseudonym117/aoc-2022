@@ -12,18 +12,24 @@ if (-not($NoBuild)) {
 }
 
 $AbsoluteScript = Resolve-Path -Path $Script
-$MountDir = Split-Path -Path $AbsoluteScript 
-$FileName = Split-Path -Path $AbsoluteScript -Leaf
+$ScriptMountDir = Split-Path -Path $AbsoluteScript 
+$ScriptFileName = Split-Path -Path $AbsoluteScript -Leaf
+
+$AbsoluteInput = Resolve-Path -Path $InputFile
+$InputMountDir = Split-Path -Path $AbsoluteInput
+$InputFileName = Split-Path -Path $AbsoluteInput -Leaf
 
 Write-Output ""
 Write-Output "Running $Script..."
 Write-Output ""
 Write-Output ">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>"
 
-Get-Content -Raw -Path $InputFile | docker run `
+docker run `
     -i `
     --rm `
     --name golf `
-    --mount type=bind,source="$($MountDir)",target=/src `
+    --mount type=bind,source="$($ScriptMountDir)",target=/src `
+    --mount type=bind,source="$($InputMountDir)",target=/input `
     golfscript:alpha `
-    "/src/$($FileName)"
+    "/src/$($ScriptFileName)" `
+    "/input/$($InputFileName)"

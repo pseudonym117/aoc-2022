@@ -5,4 +5,6 @@ WORKDIR /
 RUN git clone https://github.com/darrenks/golfscript.git && \
     chmod +x /golfscript/golfscript.rb
 
-ENTRYPOINT [ "/golfscript/golfscript.rb" ]
+ADD shim.sh /shim.sh
+
+ENTRYPOINT [ "/shim.sh" ]
